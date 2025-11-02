@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('ID');
-            $table->uuid('superior_id')->nullable()->comment('上司ユーザーID');
-            $table->uuid('department_id')->nullable()->comment('部署ID');
+            $table->foreignUuid('superior_id')->nullable()->comment('上司ユーザーID');
+            $table->foreignUuid('department_id')->nullable()->comment('部署ID');
             $table->string('name', 191)->comment('氏名');
             $table->string('email', 191)->unique()->comment('メールアドレス');
             $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス承認済み');
