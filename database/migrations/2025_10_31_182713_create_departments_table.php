@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('ID');
-            $table->uuid('manager_user_id')->nullable()->comment('責任者ID');
+            $table->foreignUuid('manager_user_id')->nullable()->comment('責任者ID');
             $table->string('name', 191)->comment('部署名');
             $table->dateTimes();
         });
