@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\MeController;
 
-Route::get('/', function () {
-    return response()->json([
-        'laravel_version' => app()->version()
-    ]);
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::get('/me', MeController::class);
 });
