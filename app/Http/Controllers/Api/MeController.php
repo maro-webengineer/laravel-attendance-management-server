@@ -16,7 +16,7 @@ class MeController extends Controller
     {
         $user = $request->user();
 
-        return new JsonResponse([
+        return response()->json([
             'data' => [
                 'id' => $user->id,
                 'name' => $user->name,

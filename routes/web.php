@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return ['Laravel' => app()->version()];
 });
 
-Route::controller(AuthController::class)->prefix('v1')->group(function () {
+Route::middleware(['web'])->controller(AuthController::class)->prefix('api')->group(function () {
     Route::post('/login', 'login')->name('login');
     Route::post('/logout', 'logout')->name('logout');
 });
