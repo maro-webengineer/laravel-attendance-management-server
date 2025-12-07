@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginRequest extends FormRequest
 {
@@ -28,12 +29,11 @@ class LoginRequest extends FormRequest
         return [
             'email' => [
                 'required',
-                'string',
                 'max:191',
+                'email:rfc,dns,spoof'
             ],
             'password' => [
                 'required',
-                'string',
                 'min:8',
                 'max:16',
             ],
@@ -52,14 +52,23 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'メールアドレスまたはパスワードに誤りがあります。',
+            'email.email' => '有効なメールアドレスを指定してください。',
             'password.required' => 'メールアドレスまたはパスワードに誤りがあります。',
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        $response['errors']  = $validator->errors()->toArray();
+        $errors = $validator->errors()->toArray();
+        logger()->error('$errors', $errors);
 
-        throw new HttpResponseException(response()->json($response));
+        foreach ($errors as $field_errors) {
+            foreach ($field_errors as $row) {
+                $messages[] = $row;
+            }
+        }
+        $error_messages = implode("\n", $messages);
+
+        throw new HttpResponseException(response()->json(['error' => $error_messages], Response::HTTP_BAD_REQUEST));
     }
 }

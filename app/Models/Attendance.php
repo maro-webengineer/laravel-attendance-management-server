@@ -21,7 +21,7 @@ class Attendance extends Model
         'work_date',
         'clock_in',
         'clock_out',
-        'break_minutes',
-        'status'
+        'break_started_at',
+        'break_ended_at'
     ];
 }
