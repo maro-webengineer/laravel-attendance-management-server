@@ -13,6 +13,6 @@ Route::prefix('attendances')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/clock_in', [AttendanceController::class, 'clockIn']);
-        Route::PATCH('/clock_out', [AttendanceController::class, 'clockOut']);
+        Route::patch('/clock_out', [AttendanceController::class, 'clockOut']);
     });
 });
