@@ -4,44 +4,55 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
-        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
-            logger()->info('ログイン成功', ['email' => $validated['email']]);
-            $request->session()->regenerate();
+        try {
+            $user = $this->authService->authenticate(
+                $validated['email'],
+                $validated['password'],
+            );
 
-            return response()->json(['message' => 'ログインに成功しました。']);
+            return response()->json([
+                'message' => 'ログインに成功しました。',
+                'user_name' => $user->name,
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json($e->errors(), Response::HTTP_UNAUTHORIZED);
         }
-
-        logger()->error('ログイン失敗', ['email' => $validated['email']]);
-
-        return response()->json([
-            'message' => 'ログインに失敗しました。',
-        ], Response::HTTP_UNAUTHORIZED);
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-        if (Auth::guard()->guest()) {
-            return response()->json([
-                'message' => '既にログアウトしています。',
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        $this->authService->logout();
 
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        return response()->json([
+            'message' => 'ログアウトしました。',
+        ]);
+    }
 
-        return response()->json(['message' => 'ログアウトしました。',]);
+    public function user(Request $request): JsonResponse
+    {
+        return response()->json([
+            'user' => $request->user(),
+        ]);
     }
 
 }
