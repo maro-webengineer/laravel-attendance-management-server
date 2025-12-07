@@ -24,4 +24,9 @@ class Attendance extends Model
         'break_started_at',
         'break_ended_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
