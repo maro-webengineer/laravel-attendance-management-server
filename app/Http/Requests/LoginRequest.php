@@ -62,6 +62,7 @@ class LoginRequest extends FormRequest
         $errors = $validator->errors()->toArray();
         logger()->error('$errors', $errors);
 
+        $messages = [];
         foreach ($errors as $field_errors) {
             foreach ($field_errors as $row) {
                 $messages[] = $row;
