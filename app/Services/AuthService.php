@@ -11,10 +11,10 @@ class AuthService
     {
         if (!Auth::attempt(['email' => $email, 'password' => $password])) {
 
-            logger()->warning('ログイン失敗', [[
+            logger()->warning('ログイン失敗', [
                 'email' => $email,
                 'ip' => request()->ip(),
-            ]]);
+            ]);
 
             throw ValidationException::withMessages([
                 'message' => ['メールアドレスまたはパスワードが正しくありません。'],
