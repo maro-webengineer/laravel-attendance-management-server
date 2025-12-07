@@ -55,15 +55,7 @@ class AttendanceController extends Controller
     public function clockIn(Request $request)
     {
         try {
-            $user = $request->user();
-
-            if (!$user) {
-                return response()->json([
-                    'message' => '認証されていません。',
-                ]);
-            }
-
-            $attendance = $this->attendanceService->clockIn($user);
+            $attendance = $this->attendanceService->clockIn($request->user());
 
             return response()->json([
                 'message' => '出勤打刻が完了しました。',
